@@ -1,17 +1,48 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+interface AuthData {
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
+  const [authData, setAuthData] = useState<AuthData>({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setAuthData((prevAuthData) => ({
+      ...prevAuthData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   return (
     <>
       <div className="login-form">
         <div className="login-form__container">
-          <input className="login-form__input" type="text" placeholder="Email" />
-          <input className="login-form__input" type="text" placeholder="Password" />
+          <input
+            className="login-form__input"
+            onChange={handleChange}
+            type="text"
+            placeholder="Email"
+            name="email"
+          />
+          <input
+            className="login-form__input"
+            onChange={handleChange}
+            type="text"
+            placeholder="Password"
+            name="password"
+          />
           <button className="login-form__btn">Log in</button>
         </div>
-        <p className="login-form__text">Don't have an account? <Link to="/signup">Singup</Link></p>
+        <p className="login-form__text">
+          Don't have an account? <Link to="/signup">Singup</Link>
+        </p>
       </div>
     </>
   );
