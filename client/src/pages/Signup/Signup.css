@@ -33,6 +33,10 @@
   outline: none;
 }
 
+.signup-form__error {
+  color: red;
+}
+
 .signup-form__btn {
   background-color: white;
   border: none;
