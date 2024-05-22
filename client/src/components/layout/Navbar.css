@@ -1,0 +1,11 @@
+.navbar {
+  height: 4rem;
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navbar__logo {
+  height: 2.5rem;
+  width: 2.5rem;
+}
