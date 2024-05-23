@@ -3,9 +3,11 @@
   padding: 0;
   box-sizing: border-box;
   background-color: #181818;
+  color: white;
 }
 
 html, body {
   height: 100%;
   width: 100%;
+  font-family: "Roboto", sans-serif;
 }

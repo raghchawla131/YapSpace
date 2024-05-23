@@ -17,7 +17,7 @@ const Footer = () => {
     navigate("/search");
   };
   const navigateToCreatePost = () => {
-    navigate("/create-post");
+    navigate("/create");
   };
   const navigateToActivity = () => {
     navigate("/activity");
