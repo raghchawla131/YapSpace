@@ -1,6 +1,8 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { authContext } from "../../context/authContext";
 
 interface AuthData {
   email: string;
@@ -12,6 +14,9 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+
+  const{login} = useContext(authContext);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setAuthData((prevAuthData) => ({
@@ -20,9 +25,19 @@ const Login: React.FC = () => {
     }));
   };
 
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      login(authData);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
-      <div className="login-form">
+      <form onSubmit={handleLogin} className="login-form">
         <div className="login-form__container">
           <input
             className="login-form__input"
@@ -38,12 +53,14 @@ const Login: React.FC = () => {
             placeholder="Password"
             name="password"
           />
-          <button className="login-form__btn">Log in</button>
+          <button className="login-form__btn" type="submit">
+            Log in
+          </button>
         </div>
         <p className="login-form__text">
           Don't have an account? <Link to="/signup">Singup</Link>
         </p>
-      </div>
+      </form>
     </>
   );
 };

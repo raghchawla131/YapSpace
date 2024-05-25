@@ -1,8 +1,9 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useContext, useState } from "react";
 import "./Signup.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { authContext } from "../../context/authContext";
 
 interface AuthData {
   email: string;
@@ -24,6 +25,8 @@ const Signup: React.FC = () => {
   });
   const [errors, setErrors] = useState<Errors>({});
   const navigate = useNavigate();
+
+  const {signup} = useContext(authContext);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setAuthData((prevAuthData) => ({
@@ -67,7 +70,7 @@ const Signup: React.FC = () => {
   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8000/api/auth/signup", authData);
+      signup(authData);
       navigate("/");
     } catch (error) {
       console.log(error);
