@@ -37,19 +37,19 @@ const Signup: React.FC = () => {
     setErrors({});
   };
 
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  // const validateEmail = (email: string): boolean => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
 
-  const validatePassword = (password: string): boolean => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    return passwordRegex.test(password);
-  };
+  // const validatePassword = (password: string): boolean => {
+  //   const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  //   return passwordRegex.test(password);
+  // };
 
   const handleNextStep = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const { email, password } = authData;
+    // const { email, password } = authData;
     const newErrors: Errors = {};
 
     // if (!validateEmail(email)) {

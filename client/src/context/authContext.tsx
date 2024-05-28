@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
 
 interface User {
@@ -24,9 +24,9 @@ interface SignupDataTypes extends LoginDataTypes {
 export const authContext = createContext<AuthContextType | undefined>(undefined);
 
 
-export const AuthContextProvider = ({children}) => {
+export const AuthContextProvider = ({children}: {children: ReactNode}) => {
   const [currentUser, setCurrentUser] = useState<User | null>(
-    JSON.parse(localStorage.getItem("user") || null)
+    JSON.parse(localStorage.getItem("user") ?? "")
   );
 
   const login = async (authData: LoginDataTypes): Promise<void> => {
