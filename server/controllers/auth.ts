@@ -41,10 +41,10 @@ export const login = (req: Request, res: Response) => {
     //jwt authentication and storing access token in cookie using npm cookie-parser
 
     const token = jwt.sign({ id: data[0].id }, "secretKey");
-    const { password, ...other } = data[0];
+    const { user_id } = data[0];
     res.cookie("accessToken", token, {
         httpOnly: true,
-      }).status(200).json(other);
+      }).status(200).json(user_id);
   });
 };
 

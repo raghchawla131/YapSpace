@@ -10,8 +10,8 @@ const CreatePost: React.FC = () => {
   
   const fetchUserData = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/user/info", userInfo)
-      console.log(res);
+      const res = await axios.post("http://localhost:8000/api/user/info", {user_id: currentUser})
+      console.log(res.data);
       setUserInfo(res.data);
     } catch (error) {
       console.log(error);
@@ -26,9 +26,7 @@ const CreatePost: React.FC = () => {
   return (
     <>
       <div>
-        {
-          userInfo && <p>{userInfo}</p>
-        }
+        
       </div>
     </>
     

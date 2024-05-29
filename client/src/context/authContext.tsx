@@ -23,11 +23,19 @@ interface SignupDataTypes extends LoginDataTypes {
 
 export const authContext = createContext<AuthContextType | undefined>(undefined);
 
+const getUserFromLocalStorage = (): User | null => {
+  const userJson = localStorage.getItem("user");
+  if (!userJson) return null;
+  try {
+    return JSON.parse(userJson);
+  } catch (error) {
+    console.error('Error parsing JSON from localStorage', error);
+    return null;
+  }
+};
 
 export const AuthContextProvider = ({children}: {children: ReactNode}) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(
-    JSON.parse(localStorage.getItem("user") ?? "")
-  );
+  const [currentUser, setCurrentUser] = useState<User | null>(getUserFromLocalStorage);
 
   const login = async (authData: LoginDataTypes): Promise<void> => {
     const res = await axios.post(
