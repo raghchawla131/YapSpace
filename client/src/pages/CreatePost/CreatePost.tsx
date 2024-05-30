@@ -4,28 +4,15 @@ import { authContext } from "../../context/authContext";
 import "./CreatePost.css";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { userContext } from "../../context/userContext";
 
 const CreatePost: React.FC = () => {
-  const [userInfo, setUserInfo] = useState(null);
-
   const { currentUser } = useContext(authContext);
-
-  const fetchUserData = async () => {
-    try {
-      if (currentUser) {
-        const res = await axios.post("http://localhost:8000/api/user/info", {
-          user_id: currentUser,
-        });
-        setUserInfo(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { userInfo, fetchUserInfo } = useContext(userContext);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    fetchUserInfo(currentUser);
+  }, [currentUser]);
 
   const navigate = useNavigate();
 
