@@ -1,0 +1,71 @@
+.new-yap__header {
+  height: 4rem;
+  padding: 15px;
+  border-bottom: 1px solid #4d4d4d;
+  display: flex;
+  align-items: center;
+}
+
+.new-yap__back {
+  padding-right: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-yap__back--btn {
+  font-size: 2rem;
+}
+
+.new-yap__body {
+  padding: 15px 7.5px;
+  display: flex;
+  gap: 10px;
+}
+
+.new-yap__profile--img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.new-yap__right {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.new-yap__form-textarea {
+  border: none;
+}
+
+.new-yap__form-textarea:focus {
+  outline: none;
+}
+
+.new-yap__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4rem;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-yap__footer--text {
+  color: #4d4d4d;
+}
+
+.new-yap__footer--btn {
+  background-color: #4d4d4d;
+  color: #181818;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 16px;
+}
