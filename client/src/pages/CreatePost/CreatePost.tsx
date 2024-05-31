@@ -10,11 +10,29 @@ const CreatePost: React.FC = () => {
   const { currentUser } = useContext(authContext);
   const { userInfo, fetchUserInfo } = useContext(userContext);
 
+  const [yapText, setYapText] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setYapText(e.target.value);
+  };
+
+  const handleYapPost = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/yap/create_yap", {
+        yapText: yapText,
+        user_id: currentUser,
+      });
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchUserInfo(currentUser);
   }, [currentUser]);
-
-  const navigate = useNavigate();
 
   const handleCloseClick = () => {
     navigate("/");
@@ -31,21 +49,32 @@ const CreatePost: React.FC = () => {
       {userInfo && (
         <main className="new-yap__body">
           <div className="new-yap__left">
-            <img src={(userInfo as { profile_pic_url: string }).profile_pic_url} alt="" className="new-yap__profile--img" />
+            <img
+              src={(userInfo as { profile_pic_url: string }).profile_pic_url}
+              alt=""
+              className="new-yap__profile--img"
+            />
           </div>
           <div className="new-yap__right">
             <div className="new-yap__username">
-              {(userInfo as { username: string}).username}
+              {(userInfo as { username: string }).username}
             </div>
             <form className="new-yap__form">
-              <input className="new-yap__form-textarea" type="text" placeholder="What's new?" />
+              <input
+                className="new-yap__form-textarea"
+                type="text"
+                placeholder="What's new?"
+                onChange={handleChange}
+              />
             </form>
           </div>
         </main>
       )}
       <footer className="new-yap__footer">
-          <p className="new-yap__footer--text">Anyone can reply and yap</p>
-          <button className="new-yap__footer--btn">Post</button>
+        <p className="new-yap__footer--text">Anyone can reply and yap</p>
+        <button className="new-yap__footer--btn" onClick={handleYapPost}>
+          Post
+        </button>
       </footer>
     </div>
   );
