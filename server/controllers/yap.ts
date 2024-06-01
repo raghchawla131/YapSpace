@@ -12,11 +12,16 @@ export const createYap = (req: Request, res: Response) => {
 
 export const getYaps = (req: Request, res: Response) => {
   const q = `
-    SELECT 
-    users.username, users.profile_pic_url, yaps.*
-    FROM users
-    JOIN yaps
-    ON users.user_id = yaps.user_id;
+  SELECT 
+  users.username, users.profile_pic_url, yaps.*
+FROM 
+  users
+JOIN 
+  yaps
+ON 
+  users.user_id = yaps.user_id
+ORDER BY 
+  yaps.created_at DESC;
   `;
   db.query(q, (err, data: any[]) => {
     if(err) return res.status(500).json(err);

@@ -1,0 +1,50 @@
+.yap {
+  display: flex;
+  gap: 10px;
+  padding: 15px 10px;
+}
+
+.yap__avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.yap__right {
+  display: flex;
+  flex-direction: column;
+}
+
+.yap__header {
+  display: flex;
+  gap: 5px;
+}
+
+.yap__username-text {
+  font-weight: 700;
+}
+
+.yap__timestamp-text {
+  color: #4d4d4d;
+}
+
+.yap__content {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.yap__actions {
+  display: flex;
+  gap: 30px;
+}
+
+.yap__action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.yap__divider {
+  border-top: 1px solid #4d4d4d;
+}
