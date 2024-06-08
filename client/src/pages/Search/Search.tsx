@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Search.css";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
+import SearchedProfile from "../../components/search/SearchedProfile";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -33,7 +34,7 @@ const Search = () => {
 
     return () => {
       clearTimeout(debounceTimer);
-    }
+    };
   }, [searchValue]);
 
   return (
@@ -52,6 +53,15 @@ const Search = () => {
             />
           </div>
         </form>
+        <div className="search__results">
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            searchResults.map((result) => (
+              <SearchedProfile key={result.id} profile={result} />
+            ))
+          )}
+        </div>
       </div>
     </>
   );
