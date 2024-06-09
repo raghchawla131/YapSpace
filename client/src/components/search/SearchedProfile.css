@@ -1,5 +1,6 @@
 .searched-profile {
   display: flex;
+  margin: 5px 0;
 }
 
 .searched__profile-image {

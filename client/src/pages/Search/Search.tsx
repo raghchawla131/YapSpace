@@ -23,6 +23,8 @@ const Search = () => {
       setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +60,7 @@ const Search = () => {
             <p>Loading...</p>
           ) : (
             searchResults.map((result) => (
-              <SearchedProfile key={result.id} profile={result} />
+              <SearchedProfile key={result.user_id} profile={result} />
             ))
           )}
         </div>
