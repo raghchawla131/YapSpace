@@ -3,8 +3,9 @@ import db from "../db";
 
 export const searchUser = (req: Request, res: Response) => {
   const searchValue = `%${req.body.username}%`;
-  const q = "SELECT * FROM users WHERE username LIKE ?";
-  db.query(q, [searchValue], (err, data: any[]) => {
+  const userIdToExclude = req.body.user_id;
+  const q = "SELECT * FROM users WHERE username LIKE ? AND user_id != ?";
+  db.query(q, [searchValue, userIdToExclude], (err, data: any[]) => {
     if (err) return res.status(500).json(err);
     if(data.length > 0) {
       res.status(200).json(data);

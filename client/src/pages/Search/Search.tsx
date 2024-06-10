@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Search.css";
 import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import SearchedProfile from "../../components/search/SearchedProfile";
+import { authContext } from "../../context/authContext";
+import { userContext } from "../../context/userContext";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([] as any[]);
+
+  const {currentUser} = useContext(authContext);
+  const { userInfo, fetchUserInfo } = useContext(userContext);
+
+  useEffect(() => {
+    fetchUserInfo(currentUser);
+  }, [currentUser]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -15,9 +24,10 @@ const Search = () => {
 
   const searchUser = async () => {
     setLoading(true);
-    try {
+    try {      
       const res = await axios.post("http://localhost:8000/api/search/user", {
         username: searchValue,
+        user_id : userInfo.user_id,
       });
       setSearchResults(res.data);
       setLoading(false);

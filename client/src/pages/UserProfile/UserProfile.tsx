@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./UserProfile.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { authContext } from "../../context/authContext";
+import { userContext } from "../../context/userContext";
 
 
 interface UserData {
@@ -18,7 +20,7 @@ interface UserData {
 // React.SetStateAction -> type of state updater function
 const fetchUserData = async (
   user_id: number,
-  setUserInfo: React.Dispatch<React.SetStateAction<UserData | null>>,
+  setSearchedUserInfo: React.Dispatch<React.SetStateAction<UserData | null>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   setLoading(true);
@@ -26,7 +28,7 @@ const fetchUserData = async (
     const res = await axios.post("http://localhost:8000/api/user/info", {
       user_id,
     });
-    setUserInfo(res.data);
+    setSearchedUserInfo(res.data);
   } catch (error) {
     console.log(error);
   } finally {
@@ -39,41 +41,46 @@ const UserProfile: React.FC = () => {
     user_id: string;
     username: string;
   }>();
-  const [userInfo, setUserInfo] = useState<UserData | null>(null);
+  const [searchedUserInfo, setSearchedUserInfo] = useState<UserData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  
   useEffect(() => {
     if (user_id) {
-      fetchUserData(parseInt(user_id), setUserInfo, setLoading);
+      fetchUserData(parseInt(user_id), setSearchedUserInfo, setLoading);
     }
   }, [user_id, username]);
+  
+  const handleFollowToggle = () => {
+    setIsFollowing(!isFollowing);
+  }
 
   return (
     <>
       <div className="user-profile">
         {loading ? (
           <p>Loading...</p>
-        ) : userInfo ? (
+        ) : searchedUserInfo ? (
           <>
             <div className="profile">
               <div className="profile__info">
                 <div className="profile__info-container">
                   <div className="profile__info-header">
-                    <h1 className="profile__info-name">{userInfo.name}</h1>
+                    <h1 className="profile__info-name">{searchedUserInfo.name}</h1>
                     <p className="profile__info-username">
-                      {userInfo.username}
+                      {searchedUserInfo.username}
                     </p>
                   </div>
                   <div className="profile__info-img-container">
                     <img
                       className="profile__info-img"
-                      src={userInfo.profile_pic_url || "default_image_url"}
+                      src={searchedUserInfo.profile_pic_url || "default_image_url"}
                       alt=""
                     />
                   </div>
                 </div>
                 <div className="profile__info-bio">
-                  <p>{userInfo.bio}</p>
+                  <p>{searchedUserInfo.bio}</p>
                 </div>
                 <div className="profile__info-followers">
                   <img
@@ -83,9 +90,9 @@ const UserProfile: React.FC = () => {
                   />
                   <p className="profile__info-followers-cnt">50 followers</p>
                 </div>
-                <div className="profile__info-edit-profile">
-                  <button className="profile__info-edit-profile-btn">
-                    Edit profile
+                <div className="profile__info-follow">
+                  <button onClick={handleFollowToggle} className={`profile__info-follow-btn profile__info-follow-btn--${isFollowing ? "unfollow" : "follow"}`}>
+                    <p className={`profile__info-follow-btn-text--${isFollowing ? "unfollow" : "follow"}`}>{isFollowing ? "Unfollow" : "Follow"}</p>
                   </button>
                 </div>
               </div>
