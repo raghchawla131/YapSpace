@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { authContext } from "../../context/authContext";
 import { userContext } from "../../context/userContext";
-
+import { isFollowing } from '../../../../server/controllers/follow';
 
 interface UserData {
   user_id: string;
@@ -18,7 +18,7 @@ interface UserData {
 
 // React.Dispatch -> a function which can update state
 // React.SetStateAction -> type of state updater function
-const fetchUserData = async (
+const fetchSearchedUserData = async (
   user_id: number,
   setSearchedUserInfo: React.Dispatch<React.SetStateAction<UserData | null>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
@@ -37,23 +37,76 @@ const fetchUserData = async (
 };
 
 const UserProfile: React.FC = () => {
+  const { currentUser } = useContext(authContext);
+  const { userInfo, fetchUserInfo } = useContext(userContext);
   const { user_id, username } = useParams<{
     user_id: string;
     username: string;
   }>();
-  const [searchedUserInfo, setSearchedUserInfo] = useState<UserData | null>(null);
+
+  const [searchedUserInfo, setSearchedUserInfo] = useState<UserData | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  
+
+  //fetch current user info and set data in userInfo
+  useEffect(() => {
+    fetchUserInfo(currentUser);
+  }, [currentUser]);
+
+  //fetch searched user info
   useEffect(() => {
     if (user_id) {
-      fetchUserData(parseInt(user_id), setSearchedUserInfo, setLoading);
+      fetchSearchedUserData(parseInt(user_id), setSearchedUserInfo, setLoading);
     }
   }, [user_id, username]);
-  
-  const handleFollowToggle = () => {
-    setIsFollowing(!isFollowing);
-  }
+
+  const checkIsFollowing = async () => {
+      if(user_id && userInfo) {
+        const res = await axios.post("http://localhost:8000/api/follow/isFollowing", {
+          follower_id: userInfo.user_id,
+          following_id: parseInt(user_id)
+        });
+        setIsFollowing(res.data.isFollowing);
+      }
+    };
+
+  useEffect(() => {
+    try {
+      checkIsFollowing();
+    } catch (error) {
+      console.log(error)
+    }
+  }, []);
+
+  const handleFollowToggle = async () => {
+    if(isFollowing) {
+      try {
+        const res = await axios.post("http://localhost:8000/api/follow/unfollowing", {
+          follower_id: userInfo.user_id,
+          following_id: searchedUserInfo?.user_id
+        });
+        setIsFollowing(!isFollowing);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+
+      try {
+        const res = await axios.post(
+          "http://localhost:8000/api/follow/following",
+          {
+            follower_id: userInfo.user_id,
+            following_id: searchedUserInfo?.user_id,
+          }
+        );
+        setIsFollowing(!isFollowing);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <>
@@ -66,7 +119,9 @@ const UserProfile: React.FC = () => {
               <div className="profile__info">
                 <div className="profile__info-container">
                   <div className="profile__info-header">
-                    <h1 className="profile__info-name">{searchedUserInfo.name}</h1>
+                    <h1 className="profile__info-name">
+                      {searchedUserInfo.name}
+                    </h1>
                     <p className="profile__info-username">
                       {searchedUserInfo.username}
                     </p>
@@ -74,7 +129,9 @@ const UserProfile: React.FC = () => {
                   <div className="profile__info-img-container">
                     <img
                       className="profile__info-img"
-                      src={searchedUserInfo.profile_pic_url || "default_image_url"}
+                      src={
+                        searchedUserInfo.profile_pic_url || "default_image_url"
+                      }
                       alt=""
                     />
                   </div>
@@ -91,8 +148,19 @@ const UserProfile: React.FC = () => {
                   <p className="profile__info-followers-cnt">50 followers</p>
                 </div>
                 <div className="profile__info-follow">
-                  <button onClick={handleFollowToggle} className={`profile__info-follow-btn profile__info-follow-btn--${isFollowing ? "unfollow" : "follow"}`}>
-                    <p className={`profile__info-follow-btn-text--${isFollowing ? "unfollow" : "follow"}`}>{isFollowing ? "Unfollow" : "Follow"}</p>
+                  <button
+                    onClick={handleFollowToggle}
+                    className={`profile__info-follow-btn profile__info-follow-btn--${
+                      isFollowing ? "unfollow" : "follow"
+                    }`}
+                  >
+                    <p
+                      className={`profile__info-follow-btn-text--${
+                        isFollowing ? "unfollow" : "follow"
+                      }`}
+                    >
+                      {isFollowing ? "Unfollow" : "Follow"}
+                    </p>
                   </button>
                 </div>
               </div>

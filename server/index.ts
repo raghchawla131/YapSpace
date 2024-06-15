@@ -3,7 +3,8 @@ import cors from "cors";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import yapRoutes from "./routes/yap";
-import searchRoutes from "./routes/search"
+import searchRoutes from "./routes/search";
+import followRoutes from "./routes/follow";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/yap", yapRoutes);
 app.use("/api/search", searchRoutes)
+app.use("/api/follow", followRoutes)
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
