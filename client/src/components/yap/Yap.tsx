@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Yap.css";
 import axios from "axios";
 import { FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { LuRepeat2 } from "react-icons/lu";
+import { authContext } from "../../context/authContext";
 
 const Yap = () => {
+  const { currentUser } = useContext(authContext);
   const [yaps, setYaps] = useState([]);
 
   const fetchYaps = async () => {
@@ -40,6 +42,22 @@ const Yap = () => {
     }
   };
 
+  const toggleLike = async (yap_id) => {
+    if (currentUser) {      
+      try {
+        const res = await axios.post(
+          "http://localhost:8000/api/like/like_yap",
+          {
+            user_id: currentUser,
+            yap_id,
+          }
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <>
       {yaps &&
@@ -64,17 +82,22 @@ const Yap = () => {
                   <p className="yap__content-text">{yap.content}</p>
                 </div>
                 <div className="yap__actions">
-                  <div className="yap__action yap__action--like">
+                  <div
+                    onClick={() => {
+                      toggleLike(yap.yap_id);
+                    }}
+                    className="yap__action yap__action--like"
+                  >
                     <FaRegHeart className="yap__icon yap__icon--like" />
-                    <p className="yap__count yap__count--like">543</p>
+                    <p className="yap__count yap__count--like">{yap.like_count}</p>
                   </div>
                   <div className="yap__action yap__action--comment">
                     <FaRegComment className="yap__icon yap__icon--comment" />
-                    <p className="yap__count yap__count--comment">25</p>
+                    <p className="yap__count yap__count--comment">{yap.comment_count}</p>
                   </div>
                   <div className="yap__action yap__action--repost">
                     <LuRepeat2 className="yap__icon yap__icon--repost" />
-                    <p className="yap__count yap__count--repost">28</p>
+                    <p className="yap__count yap__count--repost">{yap.repost_count}</p>
                   </div>
                 </div>
               </div>

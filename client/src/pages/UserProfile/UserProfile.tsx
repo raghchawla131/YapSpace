@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { authContext } from "../../context/authContext";
 import { userContext } from "../../context/userContext";
-import { isFollowing } from '../../../../server/controllers/follow';
 
 interface UserData {
   user_id: string;
