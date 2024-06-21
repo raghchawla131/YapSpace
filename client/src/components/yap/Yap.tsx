@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Yap.css";
 import axios from "axios";
-import { FaRegHeart } from "react-icons/fa";
 import { FaRegComment } from "react-icons/fa";
 import { LuRepeat2 } from "react-icons/lu";
 import { authContext } from "../../context/authContext";
@@ -13,6 +12,7 @@ const Yap = () => {
   const fetchYaps = async () => {
     try {
       const res = await axios.post("http://localhost:8000/api/yap/get_yaps");
+      console.log(res.data);
       setYaps(res.data);
     } catch (error) {
       console.log(error);
@@ -42,18 +42,36 @@ const Yap = () => {
     }
   };
 
-  const toggleLike = async (yap_id) => {
-    if (currentUser) {      
-      try {
-        const res = await axios.post(
-          "http://localhost:8000/api/like/like_yap",
-          {
-            user_id: currentUser,
-            yap_id,
-          }
-        );
-      } catch (error) {
-        console.log(error);
+  const toggleLike = async (yap_id, isLiked) => {
+    const updatedYaps = yaps.map(yap =>
+      yap.yap_id === yap_id ? { ...yap, isLiked: !yap.isLiked, like_count: yap.like_count + (yap.isLiked ? -1 : 1) } : yap
+    );
+    setYaps(updatedYaps);
+    if (currentUser) {
+      if(isLiked) {
+        try {
+          const res = await axios.post(
+            "http://localhost:8000/api/like/unlike_yap",
+            {
+              user_id: currentUser,
+              yap_id,
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const res = await axios.post(
+            "http://localhost:8000/api/like/like_yap",
+            {
+              user_id: currentUser,
+              yap_id,
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       }
     }
   };
@@ -84,20 +102,37 @@ const Yap = () => {
                 <div className="yap__actions">
                   <div
                     onClick={() => {
-                      toggleLike(yap.yap_id);
+                      toggleLike(yap.yap_id, yap.isLiked);
                     }}
                     className="yap__action yap__action--like"
                   >
-                    <FaRegHeart className="yap__icon yap__icon--like" />
-                    <p className="yap__count yap__count--like">{yap.like_count}</p>
+                    {yap.isLiked ? (
+                      <ion-icon
+                        className="yap__icon yap__icon--like"
+                        name="heart"
+                        style={{ color: "red" }}
+                      ></ion-icon>
+                    ) : (
+                      <ion-icon
+                        className="yap__icon yap__icon--like"
+                        name="heart-outline"
+                      ></ion-icon>
+                    )}
+                    <p className="yap__count yap__count--like">
+                      {yap.like_count}
+                    </p>
                   </div>
                   <div className="yap__action yap__action--comment">
                     <FaRegComment className="yap__icon yap__icon--comment" />
-                    <p className="yap__count yap__count--comment">{yap.comment_count}</p>
+                    <p className="yap__count yap__count--comment">
+                      {yap.comment_count}
+                    </p>
                   </div>
                   <div className="yap__action yap__action--repost">
                     <LuRepeat2 className="yap__icon yap__icon--repost" />
-                    <p className="yap__count yap__count--repost">{yap.repost_count}</p>
+                    <p className="yap__count yap__count--repost">
+                      {yap.repost_count}
+                    </p>
                   </div>
                 </div>
               </div>
