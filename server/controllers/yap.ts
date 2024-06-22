@@ -11,6 +11,7 @@ export const createYap = (req: Request, res: Response) => {
 };
 
 export const getYaps = (req: Request, res: Response) => {
+  const { userId } = req.body;
   const q = `
 SELECT 
   users.username, 
@@ -22,11 +23,11 @@ FROM
 JOIN 
   yaps ON users.user_id = yaps.user_id
 LEFT JOIN 
-  likes ON yaps.yap_id = likes.yap_id AND likes.user_id = 7
+  likes ON yaps.yap_id = likes.yap_id AND likes.user_id = ?
 ORDER BY 
   yaps.created_at DESC;
   `;
-  db.query(q, (err, data: any[]) => {
+  db.query(q, [userId], (err, data: any[]) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });

@@ -5,23 +5,37 @@ import { FaRegComment } from "react-icons/fa";
 import { LuRepeat2 } from "react-icons/lu";
 import { authContext } from "../../context/authContext";
 
+
+interface YapData {
+  username: string;
+  profile_pic_url: string;
+  yap_id: number;
+  user_id: number;
+  content: string;
+  created_at: string;
+  like_count: number;
+  comment_count: number;
+  repost_count: number;
+  isLiked: boolean;
+}
+
 const Yap = () => {
-  const { currentUser } = useContext(authContext);
-  const [yaps, setYaps] = useState([]);
+  const { currentUser } = useContext(authContext) ?? {};
+  
+  const [yaps, setYaps] = useState<YapData[]>([]);
 
   const fetchYaps = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/yap/get_yaps");
-      console.log(res.data);
+      const res = await axios.post("http://localhost:8000/api/yap/get_yaps", {userId: currentUser});
       setYaps(res.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     fetchYaps();
-  }, []);
+  }, [currentUser]);
 
   const getTimeDifference = (createdAt: string): string => {
     const createdAtDate = new Date(createdAt);
@@ -42,36 +56,26 @@ const Yap = () => {
     }
   };
 
-  const toggleLike = async (yap_id, isLiked) => {
+  const toggleLike = async (yap_id: number, isLiked: boolean) => {
     const updatedYaps = yaps.map(yap =>
       yap.yap_id === yap_id ? { ...yap, isLiked: !yap.isLiked, like_count: yap.like_count + (yap.isLiked ? -1 : 1) } : yap
     );
     setYaps(updatedYaps);
-    if (currentUser) {
-      if(isLiked) {
-        try {
-          const res = await axios.post(
-            "http://localhost:8000/api/like/unlike_yap",
-            {
-              user_id: currentUser,
-              yap_id,
-            }
-          );
-        } catch (error) {
-          console.log(error);
+    if(currentUser) {
+      try {
+        const url = isLiked
+          ? "http://localhost:8000/api/like/unlike_yap"
+          : "http://localhost:8000/api/like/like_yap";
+        const res = await axios.post(url, {
+          user_id: currentUser,
+          yap_id,
+        });      
+        if(Array.isArray(res.data)) {
+          setYaps(res.data);
         }
-      } else {
-        try {
-          const res = await axios.post(
-            "http://localhost:8000/api/like/like_yap",
-            {
-              user_id: currentUser,
-              yap_id,
-            }
-          );
-        } catch (error) {
-          console.log(error);
-        }
+      } catch (error) {
+        console.log(error);
+        
       }
     }
   };
@@ -79,7 +83,7 @@ const Yap = () => {
   return (
     <>
       {yaps &&
-        yaps.map((yap: any) => (
+        yaps.map((yap: YapData) => (
           <div key={yap.yap_id}>
             <div className="yap">
               <div className="yap__left">
@@ -116,6 +120,7 @@ const Yap = () => {
                       <ion-icon
                         className="yap__icon yap__icon--like"
                         name="heart-outline"
+
                       ></ion-icon>
                     )}
                     <p className="yap__count yap__count--like">
