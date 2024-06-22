@@ -9,7 +9,7 @@ const Home = () => {
     <>
       <Navbar />
       <div className="yap-list">
-        <Yap />
+        <Yap profileUserId={null} />
       </div>
       <Footer />
     </>

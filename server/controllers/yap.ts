@@ -10,7 +10,7 @@ export const createYap = (req: Request, res: Response) => {
   });
 };
 
-export const getYaps = (req: Request, res: Response) => {
+export const getHomeYaps = (req: Request, res: Response) => {
   const { userId } = req.body;
   const q = `
 SELECT 
@@ -28,6 +28,33 @@ ORDER BY
   yaps.created_at DESC;
   `;
   db.query(q, [userId], (err, data: any[]) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const getProfileYaps = (req: Request, res: Response) => {
+  const { userId, profileUserId } = req.body;
+
+  const q = `
+    SELECT 
+      users.username, 
+      users.profile_pic_url, 
+      yaps.*, 
+      IF(likes.user_id IS NULL, false, true) AS isLiked
+    FROM 
+      users
+    JOIN 
+      yaps ON users.user_id = yaps.user_id
+    LEFT JOIN 
+      likes ON yaps.yap_id = likes.yap_id AND likes.user_id = ?
+    WHERE 
+      users.user_id = ?
+    ORDER BY 
+      yaps.created_at DESC;
+  `;
+
+  db.query(q, [userId, profileUserId], (err, data: any[]) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });

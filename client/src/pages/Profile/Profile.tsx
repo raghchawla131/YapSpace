@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import "./Profile.css";
+import Yap from "../../components/yap/Yap";
 import { signup } from "../../../../server/controllers/auth";
 import { userContext } from "../../context/userContext";
 import { authContext } from "../../context/authContext";
@@ -10,7 +11,7 @@ interface EditProfileData {
 }
 
 const Profile = () => {
-  const { currentUser } = useContext(authContext);
+  const { currentUser } = useContext(authContext) || {};
   const { userInfo, fetchUserInfo } = useContext(userContext);
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -37,8 +38,8 @@ const Profile = () => {
     setEditProfileData({
       ...editProfileData,
       [e.target.name]: e.target.value,
-    });    
-  }
+    });
+  };
 
   const handleSubmit = () => {
     // Call the API to update the user's profile
@@ -46,46 +47,52 @@ const Profile = () => {
 
   return (
     <>
-    {userInfo && (
-
-      <div className="profile">
-        <div className="profile__info">
-          <div className="profile__info-container">
-            <div className="profile__info-header">
-              <h1 className="profile__info-name">{userInfo.name}</h1>
-              <p className="profile__info-username">{userInfo.username}</p>
+      {userInfo && (
+        <div className="profile">
+          <div className="profile__info">
+            <div className="profile__info-container">
+              <div className="profile__info-header">
+                <h1 className="profile__info-name">{userInfo.name}</h1>
+                <p className="profile__info-username">{userInfo.username}</p>
+              </div>
+              <div className="profile__info-img-container">
+                <img
+                  className="profile__info-img"
+                  src={userInfo.profile_pic_url || "default_image_url"}
+                  alt=""
+                />
+              </div>
             </div>
-            <div className="profile__info-img-container">
+            <div className="profile__info-bio">
+              <p>{userInfo.bio}</p>
+            </div>
+            <div className="profile__info-followers">
               <img
-                className="profile__info-img"
-                src={userInfo.profile_pic_url || "default_image_url"}
+                className="profile__info-followers-img"
+                src="https://images.unsplash.com/photo-1702838834593-5d1bbab96706?q=80&w=1938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt=""
               />
+              <p className="profile__info-followers-cnt">50 followers</p>
+            </div>
+            <div className="profile__info-edit-profile">
+              <button
+                onClick={toggleEditProfile}
+                className="profile__info-edit-profile-btn"
+              >
+                Edit profile
+              </button>
             </div>
           </div>
-          <div className="profile__info-bio">
-            <p>{userInfo.bio}</p>
-          </div>
-          <div className="profile__info-followers">
-            <img
-              className="profile__info-followers-img"
-              src="https://images.unsplash.com/photo-1702838834593-5d1bbab96706?q=80&w=1938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt=""
-            />
-            <p className="profile__info-followers-cnt">50 followers</p>
-          </div>
-          <div className="profile__info-edit-profile">
-            <button
-              onClick={toggleEditProfile}
-              className="profile__info-edit-profile-btn"
-            >
-              Edit profile
-            </button>
-          </div>
+          <div className="profile__posts"></div>
         </div>
-        <div className="profile__posts"></div>
+      )}
+      <div>
+        {currentUser && (
+          <div className="yap-list">
+            <Yap profileUserId={currentUser} />
+          </div>
+        )}
       </div>
-    )}
       {showPopUp && (
         <div onClick={toggleEditProfile} className="popup-backdrop">
           <div onClick={handlePopupClick} className="popup">
