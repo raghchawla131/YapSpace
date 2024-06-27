@@ -11,19 +11,23 @@ export const createYap = (req: Request, res: Response) => {
 };
 
 export const getHomeYaps = (req: Request, res: Response) => {
+  //this userId is of current logged in user
   const { userId } = req.body;
   const q = `
-SELECT 
+    SELECT 
   users.username, 
   users.profile_pic_url, 
   yaps.*, 
-  IF(likes.user_id IS NULL, false, true) AS isLiked
+  IF(likes.user_id IS NULL, false, true) AS isLiked,
+  IF(reposts.repost_user_id IS NULL, false, true) AS isReposted
 FROM 
   users
 JOIN 
   yaps ON users.user_id = yaps.user_id
 LEFT JOIN 
   likes ON yaps.yap_id = likes.yap_id AND likes.user_id = ?
+LEFT JOIN 
+  reposts ON yaps.yap_id = reposts.original_yap_id AND reposts.repost_user_id = 5
 ORDER BY 
   yaps.created_at DESC;
   `;

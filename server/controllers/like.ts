@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import db from "../db";
 
 export const likeYap = (req: Request, res: Response) => {
-  const { user_id } = req.body;
-  const { yap_id } = req.body;
+  const { user_id, yap_id } = req.body;
   const insertLikeQuery =
     "INSERT INTO likes (yap_id, user_id, created_at) VALUES (?, ?, ?)";
   const values = [yap_id, user_id, new Date()];

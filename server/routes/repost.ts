@@ -1,8 +1,9 @@
 import express from 'express';
-import { info } from '../controllers/user';
+import { removeRepostYap, repostYap } from '../controllers/repost';
 
 const router = express.Router();
 
-router.post('/repost', info);
+router.post('/repost_yap', repostYap);
+router.post('/remove_repost_yap', removeRepostYap);
 
 export default router;
