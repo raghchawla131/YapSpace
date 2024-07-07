@@ -38,7 +38,7 @@ export const AuthContextProvider = ({children}: {children: ReactNode}) => {
 
   const login = async (authData: LoginDataTypes): Promise<void> => {
     const res = await axios.post(
-      "http://localhost:8000/api/auth/login",
+      "http://localhost:8001/api/auth/login",
       authData,
       { withCredentials: true, }
     );
@@ -46,7 +46,7 @@ export const AuthContextProvider = ({children}: {children: ReactNode}) => {
   }
 
   const signup = async (authData: SignupDataTypes): Promise<void> => {
-    await axios.post("http://localhost:8000/api/auth/signup", authData);
+    await axios.post("http://localhost:8001/api/auth/signup", authData);
   }
 
   useEffect(() => {

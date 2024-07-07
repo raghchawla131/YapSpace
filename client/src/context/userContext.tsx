@@ -22,7 +22,7 @@ export const UserContextProvider = ({children}: {children: ReactNode}) => {
 
   const fetchUserInfo = async(currentUser: number): Promise<void> => {
     try {
-      const res = await axios.post("http://localhost:8000/api/user/info", {
+      const res = await axios.post("http://localhost:8001/api/user/info", {
           user_id: currentUser,
         });        
         setUserInfo(res.data);

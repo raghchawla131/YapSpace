@@ -24,7 +24,7 @@ const fetchSearchedUserData = async (
 ) => {
   setLoading(true);
   try {
-    const res = await axios.post("http://localhost:8000/api/user/info", {
+    const res = await axios.post("http://localhost:8001/api/user/info", {
       user_id,
     });
     setSearchedUserInfo(res.data);
@@ -63,7 +63,7 @@ const UserProfile: React.FC = () => {
 
   const checkIsFollowing = async () => {
       if(user_id && userInfo) {
-        const res = await axios.post("http://localhost:8000/api/follow/isFollowing", {
+        const res = await axios.post("http://localhost:8001/api/follow/isFollowing", {
           follower_id: userInfo.user_id,
           following_id: parseInt(user_id)
         });
@@ -82,7 +82,7 @@ const UserProfile: React.FC = () => {
   const handleFollowToggle = async () => {
     if(isFollowing) {
       try {
-        const res = await axios.post("http://localhost:8000/api/follow/unfollowing", {
+        const res = await axios.post("http://localhost:8001/api/follow/unfollowing", {
           follower_id: userInfo.user_id,
           following_id: searchedUserInfo?.user_id
         });
@@ -94,7 +94,7 @@ const UserProfile: React.FC = () => {
 
       try {
         const res = await axios.post(
-          "http://localhost:8000/api/follow/following",
+          "http://localhost:8001/api/follow/following",
           {
             follower_id: userInfo.user_id,
             following_id: searchedUserInfo?.user_id,

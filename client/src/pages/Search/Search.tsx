@@ -25,7 +25,7 @@ const Search = () => {
   const searchUser = async () => {
     setLoading(true);
     try {      
-      const res = await axios.post("http://localhost:8000/api/search/user", {
+      const res = await axios.post("http://localhost:8001/api/search/user", {
         username: searchValue,
         user_id : userInfo.user_id,
       });

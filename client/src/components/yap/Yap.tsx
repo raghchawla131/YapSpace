@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Yap.css";
 import axios from "axios";
-
 import { FaRegComment } from "react-icons/fa";
 import { authContext } from "../../context/authContext";
 import { useLocation } from "react-router-dom";
@@ -33,9 +32,9 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
     try {
       let url;
       if (location.pathname.includes("/profile")) {
-        url = "http://localhost:8000/api/yap/get_profile_yaps";
+        url = "http://localhost:8001/api/yap/get_profile_yaps";
       } else {
-        url = "http://localhost:8000/api/yap/get_yaps";
+        url = "http://localhost:8001/api/yap/get_yaps";
       }
 
       const res = await axios.post(url, {
@@ -48,9 +47,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
     }
   };
 
-  useEffect(() => {
-    fetchYaps();
-  }, [currentUser]);
+ // Added profileUserId to the dependency array
 
   const getTimeDifference = (createdAt: string): string => {
     const createdAtDate = new Date(createdAt);
@@ -76,61 +73,67 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
       yap.yap_id === yap_id
         ? {
             ...yap,
-            isLiked: !yap.isLiked,
-            like_count: yap.like_count + (yap.isLiked ? -1 : 1),
+            isLiked: !yap.isLiked, // Updated the local state
+            like_count: yap.like_count + (yap.isLiked ? -1 : 1), // Updated the local state
           }
         : yap
     );
-    setYaps(updatedYaps);
+    setYaps(updatedYaps); // Updated the local state
+
     if (currentUser) {
       try {
         const url = isLiked
-          ? "http://localhost:8000/api/like/unlike_yap"
-          : "http://localhost:8000/api/like/like_yap";
-        const res = await axios.post(url, {
+          ? "http://localhost:8001/api/like/unlike_yap"
+          : "http://localhost:8001/api/like/like_yap";
+        await axios.post(url, {
           user_id: currentUser,
           yap_id,
         });
-        if (Array.isArray(res.data)) {
-          setYaps(res.data);
-        }
       } catch (error) {
         console.log(error);
       }
     }
   };
 
-  const toggleRepost = async (creator_id: number, original_yap_id: number, isReposted: boolean) => {
+  const toggleRepost = async (
+    creator_id: number,
+    original_yap_id: number,
+    isReposted: boolean
+  ) => {
     if (currentUser === creator_id) {
       return;
     }
 
-    const updatedYaps = yaps.map((yap) => 
-      yap.yap_id === original_yap_id
-        ? {
-          ...yap,
-          isReposted: !isReposted,
-          repost_count: yap.repost_count + (yap.isReposted ? -1 : 1)
-          }
-        : yap
-    );
-    setYaps(updatedYaps);
     try {
       const url = isReposted
-       ? "http://localhost:8000/api/repost/remove_repost_yap"
-       : "http://localhost:8000/api/repost/repost_yap"
-      const res = await axios.post(url, {
+        ? "http://localhost:8001/api/repost/remove_repost_yap"
+        : "http://localhost:8001/api/repost/repost_yap";
+
+      await axios.post(url, {
         creator_id: creator_id,
         original_yap_id: original_yap_id,
         currentUser: currentUser,
       });
-      if (Array.isArray(res.data)) {
-        setYaps(res.data);
-      }
+
+      // Update local state only after backend operation is successful
+      const updatedYaps = yaps.map((yap) =>
+        yap.yap_id === original_yap_id
+          ? {
+              ...yap,
+              isReposted: !yap.isReposted,
+              repost_count: yap.repost_count + (yap.isReposted ? -1 : 1),
+            }
+          : yap
+      );
+      setYaps(updatedYaps);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    fetchYaps();
+  }, [currentUser, profileUserId, toggleRepost]);
 
   return (
     <>
@@ -163,7 +166,6 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
                     className="yap__action yap__action--like"
                   >
                     {yap.isLiked ? (
-                      //type error can be ignored
                       <ion-icon
                         className="yap__icon yap__icon--like"
                         name="heart"
@@ -193,9 +195,9 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
                   >
                     {yap.isReposted ? (
                       <ion-icon
-                      className="yap__icon yap__icon--repost"
-                      name="git-compare-sharp"
-                    ></ion-icon>
+                        className="yap__icon yap__icon--repost"
+                        name="git-compare-sharp"
+                      ></ion-icon>
                     ) : (
                       <ion-icon
                         className="yap__icon yap__icon--repost"

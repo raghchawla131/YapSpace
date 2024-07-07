@@ -20,7 +20,7 @@ const CreatePost: React.FC = () => {
 
   const handleYapPost = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/yap/create_yap", {
+      const res = await axios.post("http://localhost:8001/api/yap/create_yap", {
         yapText: yapText,
         user_id: currentUser,
       });
