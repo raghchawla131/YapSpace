@@ -26,7 +26,7 @@ interface Props {
 const Yap: React.FC<Props> = ({ profileUserId }) => {
   const { currentUser } = useContext(authContext) ?? {};
   const [yaps, setYaps] = useState<YapData[]>([]);
-  const location = useLocation();
+  const location = useLocation();  
 
   const fetchYaps = async () => {
     try {
@@ -47,8 +47,6 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
       console.log(error);
     }
   };
-
- // Added profileUserId to the dependency array
 
   const getTimeDifference = (createdAt: string): string => {
     const createdAtDate = new Date(createdAt);
@@ -74,12 +72,12 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
       yap.yap_id === yap_id
         ? {
             ...yap,
-            isLiked: !yap.isLiked, // Updated the local state
-            like_count: yap.like_count + (yap.isLiked ? -1 : 1), // Updated the local state
+            isLiked: !yap.isLiked,
+            like_count: yap.like_count + (yap.isLiked ? -1 : 1),
           }
         : yap
     );
-    setYaps(updatedYaps); // Updated the local state
+    setYaps(updatedYaps);
 
     if (currentUser) {
       try {
@@ -111,9 +109,9 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
         : "http://localhost:8001/api/repost/repost_yap";
 
       await axios.post(url, {
-        creator_id: creator_id,
-        original_yap_id: original_yap_id,
-        currentUser: currentUser,
+        creator_id,
+        original_yap_id,
+        currentUser,
       });
 
       // Update local state only after backend operation is successful
@@ -134,7 +132,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
 
   useEffect(() => {
     fetchYaps();
-  }, [currentUser, profileUserId, toggleRepost, toggleLike]);
+  }, [currentUser, profileUserId]);
 
   return (
     <>
