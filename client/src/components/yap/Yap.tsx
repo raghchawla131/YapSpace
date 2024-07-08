@@ -41,6 +41,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
         userId: currentUser,
         profileUserId: profileUserId,
       });
+      
       setYaps(res.data);
     } catch (error) {
       console.log(error);
@@ -133,7 +134,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
 
   useEffect(() => {
     fetchYaps();
-  }, [currentUser, profileUserId, toggleRepost]);
+  }, [currentUser, profileUserId, toggleRepost, toggleLike]);
 
   return (
     <>

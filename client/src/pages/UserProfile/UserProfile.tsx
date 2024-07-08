@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { authContext } from "../../context/authContext";
 import { userContext } from "../../context/userContext";
+import Yap from "../../components/yap/Yap";
 
 interface UserData {
   user_id: string;
@@ -62,36 +63,41 @@ const UserProfile: React.FC = () => {
   }, [user_id, username]);
 
   const checkIsFollowing = async () => {
-      if(user_id && userInfo) {
-        const res = await axios.post("http://localhost:8001/api/follow/isFollowing", {
+    if (user_id && userInfo) {
+      const res = await axios.post(
+        "http://localhost:8001/api/follow/isFollowing",
+        {
           follower_id: userInfo.user_id,
-          following_id: parseInt(user_id)
-        });
-        setIsFollowing(res.data.isFollowing);
-      }
-    };
+          following_id: parseInt(user_id),
+        }
+      );
+      setIsFollowing(res.data.isFollowing);
+    }
+  };
 
   useEffect(() => {
     try {
       checkIsFollowing();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }, []);
 
   const handleFollowToggle = async () => {
-    if(isFollowing) {
+    if (isFollowing) {
       try {
-        const res = await axios.post("http://localhost:8001/api/follow/unfollowing", {
-          follower_id: userInfo.user_id,
-          following_id: searchedUserInfo?.user_id
-        });
+        const res = await axios.post(
+          "http://localhost:8001/api/follow/unfollowing",
+          {
+            follower_id: userInfo.user_id,
+            following_id: searchedUserInfo?.user_id,
+          }
+        );
         setIsFollowing(!isFollowing);
       } catch (error) {
         console.log(error);
       }
     } else {
-
       try {
         const res = await axios.post(
           "http://localhost:8001/api/follow/following",
@@ -163,7 +169,13 @@ const UserProfile: React.FC = () => {
                   </button>
                 </div>
               </div>
-              <div className="profile__posts"></div>
+              <div>
+                {user_id && (
+                  <div className="yap-list">
+                    <Yap profileUserId={parseInt(user_id)} />
+                  </div>
+                )}
+              </div>
             </div>
           </>
         ) : (

@@ -39,40 +39,76 @@ ORDER BY
 
 export const getProfileYaps = (req: Request, res: Response) => {
   const { userId, profileUserId } = req.body;
+  if(userId === profileUserId) {
+    const q = `
+    SELECT 
+      users.username, 
+      users.profile_pic_url, 
+      yaps.yap_id, 
+      yaps.user_id, 
+      yaps.content, 
+      yaps.created_at, 
+      yaps.like_count, 
+      yaps.comment_count, 
+      yaps.repost_count, 
+      IF(likes.user_id IS NULL, false, true) AS isLiked,
+      IF(reposts.repost_user_id IS NULL, false, true) AS isReposted
+    FROM 
+      yaps
+    JOIN 
+      users ON yaps.user_id = users.user_id
+    LEFT JOIN 
+      likes ON yaps.yap_id = likes.yap_id AND likes.user_id = ?
+    LEFT JOIN 
+      reposts ON yaps.yap_id = reposts.original_yap_id AND reposts.repost_user_id = ?
+    WHERE 
+      yaps.user_id = ? OR reposts.repost_user_id = ?
+    ORDER BY 
+      yaps.created_at DESC;
+      `;
+    
+      db.query(
+        q,
+        [profileUserId, profileUserId, profileUserId, profileUserId],
+        (err, data: any[]) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json(data);
+        }
+      );
+  }  
+  else {
+    const q = `
+  SELECT 
+    users.username, 
+    users.profile_pic_url, 
+    yaps.yap_id, 
+    yaps.user_id, 
+    yaps.content, 
+    yaps.created_at, 
+    yaps.like_count, 
+    yaps.comment_count, 
+    yaps.repost_count, 
+    EXISTS (SELECT 1 FROM likes WHERE yaps.yap_id = likes.yap_id AND likes.user_id = ?) AS isLiked,
+    EXISTS (SELECT 1 FROM reposts WHERE yaps.yap_id = reposts.original_yap_id AND reposts.repost_user_id = ?) AS isReposted
+  FROM 
+    yaps
+  JOIN 
+    users ON yaps.user_id = users.user_id
+  WHERE 
+    yaps.user_id = ? OR EXISTS (SELECT 1 FROM reposts WHERE yaps.yap_id = reposts.original_yap_id AND reposts.repost_user_id = ?)
+  ORDER BY 
+    yaps.created_at DESC;
+`;
 
-  const q = `
-SELECT 
-  users.username, 
-  users.profile_pic_url, 
-  yaps.yap_id, 
-  yaps.user_id, 
-  yaps.content, 
-  yaps.created_at, 
-  yaps.like_count, 
-  yaps.comment_count, 
-  yaps.repost_count, 
-  IF(likes.user_id IS NULL, false, true) AS isLiked,
-  IF(reposts.repost_user_id IS NULL, false, true) AS isReposted
-FROM 
-  yaps
-JOIN 
-  users ON yaps.user_id = users.user_id
-LEFT JOIN 
-  likes ON yaps.yap_id = likes.yap_id AND likes.user_id = ?
-LEFT JOIN 
-  reposts ON yaps.yap_id = reposts.original_yap_id AND reposts.repost_user_id = ?
-WHERE 
-  yaps.user_id = ? OR reposts.repost_user_id = ?
-ORDER BY 
-  yaps.created_at DESC;
-  `;
+    
+      db.query(
+        q,
+        [userId, userId, profileUserId, userId],
+        (err, data: any[]) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json(data);
+        }
+      );
+  }
 
-  db.query(
-    q,
-    [profileUserId, profileUserId, profileUserId, profileUserId],
-    (err, data: any[]) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json(data);
-    }
-  );
 };
