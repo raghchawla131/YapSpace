@@ -37,8 +37,8 @@ const fetchSearchedUserData = async (
 };
 
 const UserProfile: React.FC = () => {
-  const { currentUser } = useContext(authContext);
-  const { userInfo, fetchUserInfo } = useContext(userContext);
+  const { currentUser } = useContext(authContext) || {};
+  const { userInfo, fetchUserInfo } = useContext(userContext) || {};
   const { user_id, username } = useParams<{
     user_id: string;
     username: string;
@@ -52,7 +52,9 @@ const UserProfile: React.FC = () => {
 
   //fetch current user info and set data in userInfo
   useEffect(() => {
-    fetchUserInfo(currentUser);
+    if (currentUser) {
+      fetchUserInfo?.(currentUser.user_id);
+    }
   }, [currentUser]);
 
   //fetch searched user info
@@ -86,26 +88,20 @@ const UserProfile: React.FC = () => {
   const handleFollowToggle = async () => {
     if (isFollowing) {
       try {
-        const res = await axios.post(
-          "http://localhost:8001/api/follow/unfollowing",
-          {
-            follower_id: userInfo.user_id,
-            following_id: searchedUserInfo?.user_id,
-          }
-        );
+        await axios.post("http://localhost:8001/api/follow/unfollowing", {
+          follower_id: userInfo.user_id,
+          following_id: searchedUserInfo?.user_id,
+        });
         setIsFollowing(!isFollowing);
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
-        const res = await axios.post(
-          "http://localhost:8001/api/follow/following",
-          {
-            follower_id: userInfo.user_id,
-            following_id: searchedUserInfo?.user_id,
-          }
-        );
+        await axios.post("http://localhost:8001/api/follow/following", {
+          follower_id: userInfo.user_id,
+          following_id: searchedUserInfo?.user_id,
+        });
         setIsFollowing(!isFollowing);
       } catch (error) {
         console.log(error);

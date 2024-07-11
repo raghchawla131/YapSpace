@@ -37,20 +37,15 @@ export const getHomeYaps = (req: Request, res: Response) => {
       yaps.created_at DESC;
   `;
 
-  db.query(
-    q,
-    [userId, userId],
-    (err, data: any[]) => {
-      if (err) return res.status(500).json(err);
-      return res.status(200).json(data);
-    }
-  );
+  db.query(q, [userId, userId], (err, data: any[]) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
 };
-
 
 export const getProfileYaps = (req: Request, res: Response) => {
   const { userId, profileUserId } = req.body;
-  
+
   if (userId === profileUserId) {
     const q = `
       SELECT 
@@ -78,7 +73,7 @@ export const getProfileYaps = (req: Request, res: Response) => {
       ORDER BY 
         yaps.created_at DESC;
     `;
-    
+
     db.query(
       q,
       [profileUserId, profileUserId, profileUserId, profileUserId],
@@ -113,13 +108,13 @@ export const getProfileYaps = (req: Request, res: Response) => {
     yaps.created_at DESC;
 `;
 
-db.query(
-  q,
-  [userId, userId, userId, userId, profileUserId, userId],
-  (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
-  }
-);
+    db.query(
+      q,
+      [userId, userId, userId, userId, profileUserId, userId],
+      (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json(data);
+      }
+    );
   }
 };

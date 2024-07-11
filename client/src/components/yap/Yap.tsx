@@ -3,7 +3,12 @@ import "./Yap.css";
 import axios from "axios";
 import { FaRegComment } from "react-icons/fa";
 import { authContext } from "../../context/authContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+interface User {
+  id: number;
+  // other properties of User
+}
 
 interface YapData {
   username: string;
@@ -26,7 +31,8 @@ interface Props {
 const Yap: React.FC<Props> = ({ profileUserId }) => {
   const { currentUser } = useContext(authContext) ?? {};
   const [yaps, setYaps] = useState<YapData[]>([]);
-  const location = useLocation();  
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const fetchYaps = async () => {
     try {
@@ -41,7 +47,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
         userId: currentUser,
         profileUserId: profileUserId,
       });
-      
+
       setYaps(res.data);
     } catch (error) {
       console.log(error);
@@ -99,7 +105,7 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
     original_yap_id: number,
     isReposted: boolean
   ) => {
-    if (currentUser === creator_id) {
+    if (currentUser?.id === creator_id) {
       return;
     }
 
@@ -128,6 +134,18 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const addComment = async (
+    yap_id: number,
+    user_id: number,
+    username: string,
+    profile_pic_url: string,
+    content: string
+  ) => {
+    navigate(`/add-comment/${yap_id}`, {
+      state: { user_id, username, profile_pic_url, content },
+    });
   };
 
   useEffect(() => {
@@ -180,7 +198,18 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
                       {yap.like_count}
                     </p>
                   </div>
-                  <div className="yap__action yap__action--comment">
+                  <div
+                    onClick={() => {
+                      addComment(
+                        yap.yap_id,
+                        yap.user_id,
+                        yap.username,
+                        yap.profile_pic_url,
+                        yap.content
+                      );
+                    }}
+                    className="yap__action yap__action--comment"
+                  >
                     <FaRegComment className="yap__icon yap__icon--comment" />
                     <p className="yap__count yap__count--comment">
                       {yap.comment_count}

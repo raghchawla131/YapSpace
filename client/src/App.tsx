@@ -5,7 +5,7 @@ import {
   Outlet,
   Link,
 } from "react-router-dom";
-import './App.css'
+import "./App.css";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
@@ -15,6 +15,7 @@ import CreatePost from "./pages/CreatePost/CreatePost";
 import Activity from "./pages/Activity/Activity";
 import Profile from "./pages/Profile/Profile";
 import Footer from "./components/layout/Footer";
+import AddComment from "./pages/comment/AddComment";
 
 const Layout = () => {
   return (
@@ -32,37 +33,41 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>
+        element: <Home />,
       },
       {
         path: "/search",
-        element: <Search/>
+        element: <Search />,
       },
       {
         path: "/activity",
-        element: <Activity/>
+        element: <Activity />,
       },
       {
         path: "/profile",
-        element: <Profile/>
+        element: <Profile />,
       },
       {
         path: "/profile/:user_id/:username",
-        element: <UserProfile/>
+        element: <UserProfile />,
       },
     ],
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <Login />,
   },
   {
     path: "/signup",
-    element: <Signup/>
+    element: <Signup />,
   },
   {
     path: "/create",
-    element: <CreatePost/>
+    element: <CreatePost />,
+  },
+  {
+    path: "/add-comment/:yap_id",
+    element: <AddComment />,
   },
 ]);
 
@@ -71,7 +76,7 @@ function App() {
     <>
       <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
