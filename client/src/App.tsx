@@ -16,6 +16,7 @@ import Activity from "./pages/Activity/Activity";
 import Profile from "./pages/Profile/Profile";
 import Footer from "./components/layout/Footer";
 import AddComment from "./pages/comment/AddComment";
+import YapDiscussion from "./pages/YapDiscussion/YapDiscussion";
 
 const Layout = () => {
   return (
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
   {
     path: "/create",
     element: <CreatePost />,
+  },
+  {
+    path: "/yap-discussion/:yap_id",
+    element: <YapDiscussion />,
   },
   {
     path: "/add-comment/:yap_id",

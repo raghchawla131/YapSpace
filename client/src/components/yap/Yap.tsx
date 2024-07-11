@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaRegComment } from "react-icons/fa";
 import { authContext } from "../../context/authContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getTimeDifference } from "../../utils/dateUtils";
 
 interface User {
   id: number;
@@ -24,13 +25,25 @@ interface YapData {
   isReposted: boolean;
 }
 
-interface Props {
-  profileUserId: number | null;
+interface CommentData {
+  comment_id: number;
+  yap_id: number;
+  user_id: number;
+  content: string;
+  parent_comment_id: number | null;
+  // other properties of CommentData
 }
 
-const Yap: React.FC<Props> = ({ profileUserId }) => {
+interface Props {
+  profileUserId: number | null;
+  yap?: YapData;
+}
+
+const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
   const { currentUser } = useContext(authContext) ?? {};
   const [yaps, setYaps] = useState<YapData[]>([]);
+  const [comments, setComments] = useState<CommentData[]>([]);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -51,25 +64,6 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
       setYaps(res.data);
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  const getTimeDifference = (createdAt: string): string => {
-    const createdAtDate = new Date(createdAt);
-    const timeDifference = Date.now() - createdAtDate.getTime();
-    const secondsDifference = Math.floor(timeDifference / 1000);
-
-    if (secondsDifference < 60) {
-      return `${secondsDifference}s`;
-    } else if (secondsDifference < 3600) {
-      const minutesDifference = Math.floor(secondsDifference / 60);
-      return `${minutesDifference}m`;
-    } else if (secondsDifference < 86400) {
-      const hoursDifference = Math.floor(secondsDifference / 3600);
-      return `${hoursDifference}h`;
-    } else {
-      const daysDifference = Math.floor(secondsDifference / 86400);
-      return `${daysDifference}d`;
     }
   };
 
@@ -148,16 +142,36 @@ const Yap: React.FC<Props> = ({ profileUserId }) => {
     });
   };
 
+  const handleYapClick = async (
+    e: React.MouseEvent<HTMLDivElement>,
+    yap: YapData
+  ) => {
+    if (
+      (e.target as HTMLElement).closest(".yap__action") || // Exclude yap__action elements
+      (e.target as HTMLElement).closest(".yap__icon") || // Exclude yap__icon elements
+      (e.target as HTMLElement).closest(".yap__avatar") || // Exclude yap__avatar elements
+      (e.target as HTMLElement).closest(".yap__header") // Exclude yap__header elements
+    ) {
+      return;
+    }
+
+    navigate(`/yap-discussion/${yap.yap_id}`);
+  };
+
   useEffect(() => {
-    fetchYaps();
-  }, [currentUser, profileUserId]);
+    if (yap) {
+      setYaps([yap]);
+    } else {
+      fetchYaps();
+    }
+  }, [currentUser, profileUserId, yap]);
 
   return (
     <>
       {yaps &&
         yaps.map((yap: YapData) => (
           <div key={yap.yap_id}>
-            <div className="yap">
+            <div onClick={(e) => handleYapClick(e, yap)} className="yap">
               <div className="yap__left">
                 <img className="yap__avatar" src={yap.profile_pic_url} alt="" />
               </div>

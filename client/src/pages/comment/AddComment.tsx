@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./AddComment.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
+import { authContext } from "../../context/authContext";
+import { userContext } from "../../context/userContext";
 
 const AddComment: React.FC = () => {
+  const { currentUser } = useContext(authContext) ?? {};
+  const { userInfo, fetchUserInfo } = useContext(userContext);
   const navigate = useNavigate();
   const location = useLocation();
   const { user_id, username, profile_pic_url, content } = location.state as {
@@ -26,6 +30,10 @@ const AddComment: React.FC = () => {
   const handleCommentPost = async () => {
     // Implement the function to post a comment
   };
+
+  useEffect(() => {
+    fetchUserInfo(currentUser);
+  }, [currentUser]);
 
   return (
     <>
@@ -51,27 +59,29 @@ const AddComment: React.FC = () => {
           </div>
         </section>
 
-        <main className="add-comment__body">
-          <div className="add-comment__left">
-            <img
-              src={profile_pic_url}
-              alt=""
-              className="add-comment__profile--img"
-            />
-          </div>
-          <div className="add-comment__right">
-            <div className="add-comment__username">{username}</div>
-            <form className="add-comment__form">
-              <input
-                className="add-comment__form-textarea"
-                type="text"
-                placeholder={`${username}, what do you think?`}
-                autoFocus
-                onChange={handleChange}
+        {userInfo && (
+          <main className="add-comment__body">
+            <div className="add-comment__left">
+              <img
+                src={userInfo.profile_pic_url}
+                alt=""
+                className="add-comment__profile--img"
               />
-            </form>
-          </div>
-        </main>
+            </div>
+            <div className="add-comment__right">
+              <div className="add-comment__username">{userInfo.username}</div>
+              <form className="add-comment__form">
+                <input
+                  className="add-comment__form-textarea"
+                  type="text"
+                  placeholder={`${userInfo.username}, what do you think?`}
+                  autoFocus
+                  onChange={handleChange}
+                />
+              </form>
+            </div>
+          </main>
+        )}
 
         <footer className="add-comment__footer">
           <p className="add-comment__footer--text">Anyone can reply and yap</p>

@@ -1,0 +1,13 @@
+.yap-discussion-header {
+  height: 4rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+  padding: 0 10px;
+}
+
+.yap-discussion-header__icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
