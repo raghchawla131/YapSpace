@@ -72,8 +72,8 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
       yap.yap_id === yap_id
         ? {
             ...yap,
-            isLiked: !yap.isLiked,
-            like_count: yap.like_count + (yap.isLiked ? -1 : 1),
+            isLiked: !isLiked, // Use isLiked directly
+            like_count: yap.like_count + (isLiked ? -1 : 1), // Subtract when unliking, add when liking
           }
         : yap
     );
@@ -90,6 +90,18 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
         });
       } catch (error) {
         console.log(error);
+
+        // Optional: Revert the like state in case of an error
+        const revertedYaps = yaps.map((yap) =>
+          yap.yap_id === yap_id
+            ? {
+                ...yap,
+                isLiked, // revert to previous state
+                like_count: yap.like_count + (isLiked ? 1 : -1), // revert like count
+              }
+            : yap
+        );
+        setYaps(revertedYaps);
       }
     }
   };

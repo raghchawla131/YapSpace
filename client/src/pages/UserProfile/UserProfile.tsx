@@ -86,6 +86,8 @@ const UserProfile: React.FC = () => {
   }, []);
 
   const handleFollowToggle = async () => {
+    console.log("userinfo",userInfo?.user_id);
+    
     if (isFollowing) {
       try {
         await axios.post("http://localhost:8001/api/follow/unfollowing", {

@@ -3,6 +3,8 @@ import db from "../db";
 
 export const followUser = (req: Request, res: Response) => {
   const { follower_id, following_id } = req.body;
+  console.log(follower_id, following_id);
+  
   const q =
     "INSERT INTO followers_following (follower_id, following_id) VALUES (?, ?)";
   db.query(q, [follower_id, following_id], (err, data) => {
