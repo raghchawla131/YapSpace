@@ -22,7 +22,7 @@ export const getHomeYaps = (req: Request, res: Response) => {
       yaps.created_at, 
       yaps.like_count, 
       yaps.comment_count, 
-      yaps.repost_count, 
+      yaps.repost_count,
       IF(likes.user_id IS NULL, false, true) AS isLiked,
       IF(reposts.repost_user_id IS NULL, false, true) AS isReposted
     FROM 

@@ -27,9 +27,7 @@ const AddComment: React.FC = () => {
     setCommentText(e.target.value);
   };
 
-  const handleCommentPost = async () => {
-    // Implement the function to post a comment
-  };
+  const handleCommentPost = async () => {};
 
   useEffect(() => {
     fetchUserInfo(currentUser);

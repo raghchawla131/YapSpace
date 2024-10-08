@@ -8,7 +8,6 @@ import { getTimeDifference } from "../../utils/dateUtils";
 
 interface User {
   id: number;
-  // other properties of User
 }
 
 interface YapData {
@@ -90,7 +89,6 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
         });
       } catch (error) {
         console.log(error);
-
         // Optional: Revert the like state in case of an error
         const revertedYaps = yaps.map((yap) =>
           yap.yap_id === yap_id
@@ -107,12 +105,16 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
   };
 
   const toggleRepost = async (
-    creator_id: number,
-    original_yap_id: number,
-    isReposted: boolean
+    creator_id: number, //yap.user_id
+    original_yap_id: number, //yap.yap_id
+    isReposted: boolean //yap.isReposted
   ) => {
-    if (currentUser?.id === creator_id) {
-      return;
+    if (currentUser) {
+      if (creator_id === currentUser) {
+        console.log("You can't repost your own yap");
+
+        return;
+      }
     }
 
     try {
