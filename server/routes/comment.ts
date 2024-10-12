@@ -5,6 +5,6 @@ import { addComment, getComments } from '../controllers/comment';
 const router = express.Router();
 
 router.post('/add_comment', addComment);
-router.post('/get_comments', getComments);
+router.get('/get_root_comments/:yap_id', getComments);
 
 export default router;

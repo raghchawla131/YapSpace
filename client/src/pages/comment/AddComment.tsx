@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./AddComment.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import { authContext } from "../../context/authContext";
 import { userContext } from "../../context/userContext";
+import axios from "axios";
 
 const AddComment: React.FC = () => {
   const { currentUser } = useContext(authContext) ?? {};
@@ -15,7 +16,9 @@ const AddComment: React.FC = () => {
     username: string;
     profile_pic_url: string;
     content: string;
+    currentUser: number;
   };
+  const {yap_id} = useParams();
 
   const [commentText, setCommentText] = useState("");
 
@@ -27,7 +30,23 @@ const AddComment: React.FC = () => {
     setCommentText(e.target.value);
   };
 
-  const handleCommentPost = async () => {};
+  const handleAddCommentOnPost = async () => {        
+    try {
+      const res = await axios.post("http://localhost:8001/api/comment/add_comment", {
+        yap_id,
+        // parent_comment_id: comment_id || null,
+        parent_comment_id: null,
+        user_id: currentUser,
+        content: commentText,
+      })
+      if(res.status == 200) {
+        console.log("comment added successfully");
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     fetchUserInfo(currentUser);
@@ -85,7 +104,7 @@ const AddComment: React.FC = () => {
           <p className="add-comment__footer--text">Anyone can reply and yap</p>
           <button
             className="add-comment__footer--btn"
-            onClick={handleCommentPost}
+            onClick={handleAddCommentOnPost}
           >
             Post
           </button>

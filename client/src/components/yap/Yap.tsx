@@ -149,10 +149,11 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
     user_id: number,
     username: string,
     profile_pic_url: string,
-    content: string
+    content: string,
+    currentUser: number
   ) => {
     navigate(`/add-comment/${yap_id}`, {
-      state: { user_id, username, profile_pic_url, content },
+      state: { user_id, username, profile_pic_url, content, currentUser },
     });
   };
 
@@ -233,7 +234,8 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
                         yap.user_id,
                         yap.username,
                         yap.profile_pic_url,
-                        yap.content
+                        yap.content,
+                        currentUser,
                       );
                     }}
                     className="yap__action yap__action--comment"

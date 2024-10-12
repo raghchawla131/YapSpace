@@ -23,9 +23,9 @@ interface YapData {
 interface CommentData {
   comment_id: number;
   yap_id: number;
+  parent_comment_id: number | null;
   user_id: number;
   content: string;
-  parent_comment_id: number | null;
   // other properties of CommentData
 }
 
@@ -33,7 +33,10 @@ const YapDiscussion: React.FC = () => {
   const { currentUser } = useContext(authContext) ?? {};
   const { yap_id } = useParams<{ yap_id: string }>();
   const [yap, setYap] = useState<YapData | null>(null);
-  const [comments, setComments] = useState<CommentData[]>([]);
+  const [rootComments, setRootComments] = useState<CommentData[]>([]);
+  const [nestedComments, setNestedComments] = useState<
+    Record<number, CommentData[]>
+  >({});
 
   const navigate = useNavigate();
 
@@ -56,8 +59,28 @@ const YapDiscussion: React.FC = () => {
     }
   };
 
-  const fetchComments = async () => {
-    // Implement the function to fetch comments
+  const fetchComments = async (parentCommentId: number | null) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8001/api/comment/get_root_comments/${yap_id}`,
+        {
+          params: {
+            parent_comment_id: parentCommentId,
+          },
+        }
+      );
+      const comments: CommentData[] = res.data;
+
+      if (parentCommentId === null) setRootComments(comments);
+      else {
+        setNestedComments((prev) => ({
+          ...prev,
+          [parentCommentId]: comments,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
   };
 
   useEffect(() => {
@@ -68,14 +91,17 @@ const YapDiscussion: React.FC = () => {
   return (
     <>
       <div>
-      <header className="yap-discussion-header">
-        <div className="yap-discussion-header__back-icon">
-          <IoMdArrowBack onClick={handleClose} className="yap-discussion-header__icon" />
-        </div>
-        <div className="yap-discussion-header__title">
-          <h2>Yap</h2>
-        </div>
-      </header>
+        <header className="yap-discussion-header">
+          <div className="yap-discussion-header__back-icon">
+            <IoMdArrowBack
+              onClick={handleClose}
+              className="yap-discussion-header__icon"
+            />
+          </div>
+          <div className="yap-discussion-header__title">
+            <h2>Yap</h2>
+          </div>
+        </header>
         <Yap yap={yap} />
       </div>
     </>
