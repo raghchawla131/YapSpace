@@ -5,6 +5,7 @@ import { authContext } from "../../context/authContext";
 import axios from "axios";
 import { IoMdArrowBack } from "react-icons/io";
 import Yap from "../../components/yap/Yap";
+import Discussion from "../../components/discussion/Discussion";
 
 interface YapData {
   username: string;
@@ -70,9 +71,9 @@ const YapDiscussion: React.FC = () => {
         }
       );
       const comments: CommentData[] = res.data;
-
-      if (parentCommentId === null) setRootComments(comments);
-      else {
+      if (parentCommentId === null) {
+        setRootComments(comments);
+      } else {
         setNestedComments((prev) => ({
           ...prev,
           [parentCommentId]: comments,
@@ -85,7 +86,7 @@ const YapDiscussion: React.FC = () => {
 
   useEffect(() => {
     fetchYapData();
-    fetchComments();
+    fetchComments(null); //because you are clicking on root comment by default
   }, [yap_id]);
 
   return (
@@ -103,6 +104,7 @@ const YapDiscussion: React.FC = () => {
           </div>
         </header>
         <Yap yap={yap} />
+        <Discussion rootComments={rootComments} />
       </div>
     </>
   );
