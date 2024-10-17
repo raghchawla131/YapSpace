@@ -35,9 +35,6 @@ const YapDiscussion: React.FC = () => {
   const { yap_id } = useParams<{ yap_id: string }>();
   const [yap, setYap] = useState<YapData | null>(null);
   const [rootComments, setRootComments] = useState<CommentData[]>([]);
-  const [nestedComments, setNestedComments] = useState<
-    Record<number, CommentData[]>
-  >({});
 
   const navigate = useNavigate();
 
@@ -70,14 +67,9 @@ const YapDiscussion: React.FC = () => {
           },
         }
       );
-      const comments: CommentData[] = res.data;
+      const comments: CommentData[] = res.data;      
       if (parentCommentId === null) {
         setRootComments(comments);
-      } else {
-        setNestedComments((prev) => ({
-          ...prev,
-          [parentCommentId]: comments,
-        }));
       }
     } catch (error) {
       console.error("Error fetching comments:", error);

@@ -11,12 +11,13 @@ const AddComment: React.FC = () => {
   const { userInfo, fetchUserInfo } = useContext(userContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user_id, username, profile_pic_url, content } = location.state as {
+  const { user_id, username, profile_pic_url, content, parent_comment_id = null } = location.state as {
     user_id: number;
     username: string;
     profile_pic_url: string;
     content: string;
     currentUser: number;
+    parent_comment_id?: number | null;
   };
   const {yap_id} = useParams();
 
@@ -48,7 +49,7 @@ const AddComment: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     fetchUserInfo(currentUser);
   }, [currentUser]);
 

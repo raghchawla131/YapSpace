@@ -16,50 +16,47 @@ export const addComment = (req: Request, res: Response) => {
     }
   );
 };
-
 export const getComments = async (req: Request, res: Response) => {
   const { yap_id } = req.params;
-  const { parent_comment_id } = req.query; // parent_comment_id from query params
-  // console.log(yap_id, parent_comment_id);
 
   try {
-    let query;
-    let values;
+    // SQL query to fetch comments with the user's username and profile_pic_url
+    const query = `
+      SELECT 
+   comments.comment_id, 
+  comments.yap_id, 
+  comments.parent_comment_id, 
+  comments.user_id, 
+  comments.content, 
+  comments.created_at, 
+  comments.like_count, 
+  comments.reply_count, 
+  users.username, 
+  users.profile_pic_url
+FROM comments
+JOIN users ON comments.user_id = users.user_id
+WHERE comments.yap_id = ?
+AND comments.parent_comment_id IS NULL
+ORDER BY comments.created_at ASC;
 
-    if (parent_comment_id === "null" || !parent_comment_id) {
-      // Fetch root comments (no parent_comment_id)
-      query = `
-        SELECT * FROM comments
-        WHERE yap_id = ?
-        AND parent_comment_id IS NULL
-        ORDER BY created_at ASC
-      `;
-      values = [yap_id];
-    } else {
-      // Fetch replies for a specific comment
-      query = `
-        SELECT * FROM comments
-        WHERE yap_id = ?
-        AND parent_comment_id = ?
-        ORDER BY created_at ASC
-      `;
-      values = [yap_id, parent_comment_id];
-    }
+    `;
 
-    // Execute the database query
+    const values = [yap_id];
+
+    // Execute the query
     db.query(query, values, (error, results) => {
       if (error) {
         console.error("Error fetching comments:", error);
         return res.status(500).json({ error: "Failed to fetch comments" });
       }
 
-      // Send back the comments as a response
+      // Send back the comments with user data
       res.status(200).json(results);
     });
   } catch (error) {
     console.error("Unexpected error:", error);
-    res
-      .status(500)
-      .json({ error: "An unexpected error occurred while fetching comments" });
+    res.status(500).json({
+      error: "An unexpected error occurred while fetching comments",
+    });
   }
 };
