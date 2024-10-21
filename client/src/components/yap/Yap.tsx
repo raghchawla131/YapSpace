@@ -235,7 +235,7 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
                         yap.username,
                         yap.profile_pic_url,
                         yap.content,
-                        currentUser,
+                        currentUser
                       );
                     }}
                     className="yap__action yap__action--comment"

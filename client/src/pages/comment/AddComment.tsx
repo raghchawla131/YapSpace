@@ -19,7 +19,9 @@ const AddComment: React.FC = () => {
     currentUser: number;
     parent_comment_id?: number | null;
   };
-  const {yap_id} = useParams();
+  const {yap_id, comment_id} = useParams();
+  console.log("yap_id", yap_id);
+  console.log("comment_id", comment_id);
 
   const [commentText, setCommentText] = useState("");
 

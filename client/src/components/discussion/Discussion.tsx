@@ -1,13 +1,25 @@
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
-import { addComment } from '../../../../server/controllers/comment';
 import { useNavigate } from "react-router-dom";
 
 const Discussion: React.FC = ({ rootComments }) => {
   const navigate = useNavigate();
 
-  const addComment = () => {
-    navigate('/add-comment/{comment_id}');
+  const addComment = (comment_id: number) => {
+    navigate(`/add-comment/${comment_id}`);
+  };
+
+  const formattedTime = (created_at: Date) => {
+    const date = new Date(created_at);
+
+    const hours = date.getUTCHours().toString().padStart(2, "0");
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+
+    const formattedTime = `${hours}:${minutes}`;
+
+    return (
+      <p className=" text-gray-400 text-opacity-60">{formattedTime} ago</p>
+    );
   };
 
   return (
@@ -28,7 +40,7 @@ const Discussion: React.FC = ({ rootComments }) => {
           } = comment;
 
           return (
-            <div className=" m-3 flex gap-2">
+            <div key={comment_id} className=" m-3 flex gap-2">
               <div className=" flex gap-3">
                 <img
                   className=" h-[50px] w-[50px] rounded-full"
@@ -39,7 +51,7 @@ const Discussion: React.FC = ({ rootComments }) => {
               <div className=" flex flex-col gap-2">
                 <div className=" flex gap-2">
                   <p className=" font-bold">{username}</p>
-                  <p>{created_at}</p>
+                  {formattedTime(created_at)}
                 </div>
                 <div>
                   <p>{content}</p>
@@ -49,7 +61,10 @@ const Discussion: React.FC = ({ rootComments }) => {
                     <ion-icon name="heart-outline"></ion-icon>
                     <p>1</p>
                   </div>
-                  <div className=" flex items-center" onClick={() => addComment()}>
+                  <div
+                    className=" flex items-center"
+                    onClick={() => addComment(comment_id)}
+                  >
                     <FaRegComment />
                     <p>1</p>
                   </div>

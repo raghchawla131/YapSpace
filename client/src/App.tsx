@@ -71,6 +71,10 @@ const router = createBrowserRouter([
     element: <YapDiscussion />,
   },
   {
+    path: "/comment-discussion/:comment_id",
+    element: <YapDiscussion />,
+  },
+  {
     path: "/add-comment/:yap_id",
     element: <AddComment />,
   },
