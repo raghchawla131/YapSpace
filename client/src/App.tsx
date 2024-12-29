@@ -1,9 +1,7 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Route,
   Outlet,
-  Link,
 } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home/Home";
@@ -71,11 +69,11 @@ const router = createBrowserRouter([
     element: <YapDiscussion />,
   },
   {
-    path: "/comment-discussion/:comment_id",
-    element: <YapDiscussion />,
+    path: "/add-root-comment/:yap_id",
+    element: <AddComment />,
   },
   {
-    path: "/add-comment/:yap_id",
+    path: "/add-nested-comment/:comment_id",
     element: <AddComment />,
   },
 ]);

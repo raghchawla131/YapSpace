@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -5,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 const Discussion: React.FC = ({ rootComments }) => {
   const navigate = useNavigate();
 
-  const addComment = (comment_id: number) => {
-    navigate(`/add-comment/${comment_id}`);
+  const addComment = (comment_id: number, user_id: number, username: string, profile_pic_url: string, content: string, parent_comment_id: number) => {        
+    navigate(`/add-nested-comment/${comment_id}`, {
+      state: { comment_id, user_id, username, profile_pic_url, content, parent_comment_id },
+    });    
   };
 
   const formattedTime = (created_at: Date) => {
@@ -38,7 +41,7 @@ const Discussion: React.FC = ({ rootComments }) => {
             username,
             profile_pic_url,
           } = comment;
-
+          
           return (
             <div key={comment_id} className=" m-3 flex gap-2">
               <div className=" flex gap-3">
@@ -63,15 +66,12 @@ const Discussion: React.FC = ({ rootComments }) => {
                   </div>
                   <div
                     className=" flex items-center"
-                    onClick={() => addComment(comment_id)}
+                    onClick={() => addComment(comment_id, user_id, username, profile_pic_url, content, parent_comment_id)}
                   >
                     <FaRegComment />
                     <p>1</p>
                   </div>
-                  <div className=" flex items-center">
-                    <ion-icon name="repeat-outline"></ion-icon>
-                    <p>1</p>{" "}
-                  </div>
+                  
                 </div>
               </div>
             </div>

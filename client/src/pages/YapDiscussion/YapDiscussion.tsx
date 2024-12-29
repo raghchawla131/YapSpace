@@ -27,7 +27,6 @@ interface CommentData {
   parent_comment_id: number | null;
   user_id: number;
   content: string;
-  // other properties of CommentData
 }
 
 const YapDiscussion: React.FC = () => {
@@ -60,14 +59,14 @@ const YapDiscussion: React.FC = () => {
   const fetchComments = async (parentCommentId: number | null) => {
     try {
       const res = await axios.get(
-        `http://localhost:8001/api/comment/get_root_comments/${yap_id}`,
+        `http://localhost:8001/api/comment/get_comments/${yap_id}`,
         {
           params: {
             parent_comment_id: parentCommentId,
           },
         }
       );
-      const comments: CommentData[] = res.data;      
+      const comments: CommentData[] = res.data;
       if (parentCommentId === null) {
         setRootComments(comments);
       }
