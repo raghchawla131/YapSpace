@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import db from "../db";
 import bcrypt from "bcrypt";
-import { Jwt } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
 
 export const signup = (req: Request, res: Response) => {

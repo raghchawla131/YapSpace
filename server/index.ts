@@ -8,6 +8,7 @@ import followRoutes from "./routes/follow";
 import likeRoutes from "./routes/like";
 import commentRoutes from "./routes/comment";
 import repostRoutes from "./routes/repost";
+import notificationRoutes from "./routes/notification";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/follow", followRoutes);
 app.use("/api/like", likeRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/repost", repostRoutes);
+app.use("/api/notification", notificationRoutes);
 
 app.listen(8001, () => {
   console.log("Server is running on port 8001");
