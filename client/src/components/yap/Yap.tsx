@@ -6,9 +6,9 @@ import { authContext } from "../../context/authContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getTimeDifference } from "../../utils/dateUtils";
 
-interface User {
-  id: number;
-}
+// interface User {
+//   id: number;
+// }
 
 interface YapData {
   username: string;
@@ -46,7 +46,7 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const fetchYaps = async () => {
+  const fetchYaps = React.useCallback(async () => {
     try {
       let url;
       if (location.pathname.includes("/profile")) {
@@ -64,7 +64,7 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [location.pathname, currentUser, profileUserId]);
 
   const toggleLike = async (yap_id: number, isLiked: boolean) => {
     const updatedYaps = yaps.map((yap) =>
@@ -87,6 +87,15 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
           user_id: currentUser,
           yap_id,
         });
+
+        const notificationUrl = isLiked
+        ? "http://localhost:8001/api/notification/deleteNotifications"
+        : "http://localhost:8001/api/notification/getNotifications";
+
+        const notificationData = isLiked
+        ? { user_id: yap.user_id, triggered_by: currentUser, yap_id, type: "like" }
+        : { user_id: yap.user_id, triggered_by: currentUser, yap_id };
+
       } catch (error) {
         console.log(error);
         // Optional: Revert the like state in case of an error
@@ -179,7 +188,7 @@ const Yap: React.FC<Props> = ({ profileUserId, yap }) => {
     } else {
       fetchYaps();
     }
-  }, [currentUser, profileUserId, yap]);
+  }, [currentUser, profileUserId, yap, fetchYaps]);
 
   return (
     <>

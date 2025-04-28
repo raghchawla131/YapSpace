@@ -1,7 +1,6 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import "./Profile.css";
 import Yap from "../../components/yap/Yap";
-import { signup } from "../../../../server/controllers/auth";
 import { userContext } from "../../context/userContext";
 import { authContext } from "../../context/authContext";
 
@@ -22,7 +21,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUserInfo(currentUser);
-  }, [currentUser]);
+  }, [currentUser, fetchUserInfo]);
 
   const toggleEditProfile = () => {
     setShowPopUp(!showPopUp);

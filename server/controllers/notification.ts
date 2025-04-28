@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import db from "../db";
 
 export const getNotifications = (req: Request, res: Response) => {
-  const { user_id, is_read, limit, offSet } = req.query;
+  const { user_id, is_read, limit, offSet } = req.body;
 
   if(!user_id) return res.status(400).json({message: "user_id is required"});
   const q = "SELECT * FROM notifications where user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
